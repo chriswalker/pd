@@ -1,0 +1,3 @@
+package: github.com/chriswalker/pd
+import:
+  - package: github.com/pkg/errors
