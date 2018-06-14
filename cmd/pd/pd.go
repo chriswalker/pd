@@ -3,14 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"os"
+
+	"github.com/chriswalker/pd/pkg/pagerduty"
 )
 
 var (
-	token        = flag.String("token", "", "(required) PagerDuty auth token")
-	pagerDutyURL = "https://api.pagerduty.com/incidents"
+	token = flag.String("token", "", "(required) PagerDuty auth token")
 )
 
 func main() {
@@ -20,22 +19,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", pagerDutyURL, nil)
+	pd := pagerduty.NewPagerDutyClient(*token)
+	incidents, err := pd.GetIncidents()
 	if err != nil {
-		// TODO
-	}
-	req.Header.Add("Authorization", "Token token="+*token)
-
-	resp, err := client.Do(req)
-	if err != nil {
-		// TODO
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	fmt.Println(string(body))
+	// Output
+	for _, i := range incidents {
+		fmt.Printf("[%d] %s, %s\n", i.IncidentNumber, i.Title, i.Status)
+	}
 
 }
