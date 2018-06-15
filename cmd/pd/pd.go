@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/chriswalker/pd/pkg/output"
 	"github.com/chriswalker/pd/pkg/pagerduty"
 )
 
@@ -19,7 +20,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	pd := pagerduty.NewPagerDutyClient(*token)
+	pd := pagerduty.NewClient(*token)
 	incidents, err := pd.GetIncidents()
 	if err != nil {
 		fmt.Println(err)
@@ -27,8 +28,6 @@ func main() {
 	}
 
 	// Output
-	for _, i := range incidents {
-		fmt.Printf("[%d] %s, %s\n", i.IncidentNumber, i.Title, i.Status)
-	}
-
+	outputter := output.NewStdOutputter()
+	outputter.Output(incidents)
 }
