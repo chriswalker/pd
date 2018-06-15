@@ -1,3 +1,5 @@
 package: github.com/chriswalker/pd
 import:
   - package: github.com/pkg/errors
+  - package: github.com/fatih/color
+    version: v1.7.0
