@@ -12,11 +12,17 @@ type Incident struct {
 	Status         string `json:"status"`
 	HTMLURL        string `json:"html_url"`
 	//	Assignments      []Assignment      `json:"assignments"`
-	//	Acknowledgements []Acknowledgement `json:"acknowledgements"`
+	Acknowledgements []Acknowledgement `json:"acknowledgements"`
 }
 
 type Assignment struct {
 }
 
 type Acknowledgement struct {
+	At string       `json:"at"`
+	By Acknowledger `json:"acknowledger"`
+}
+
+type Acknowledger struct {
+	Name string `json:"summary"`
 }
