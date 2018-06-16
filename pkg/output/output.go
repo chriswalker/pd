@@ -7,6 +7,14 @@ import (
 	"github.com/fatih/color"
 )
 
+var (
+	colours = map[string]func(format string, a ...interface{}) string{
+		"triggered":    color.New(color.FgRed, color.Bold).SprintfFunc(),
+		"acknowledged": color.New(color.FgYellow, color.Bold).SprintfFunc(),
+		"resolved":     color.New(color.FgGreen, color.Bold).SprintfFunc(),
+	}
+)
+
 type StdOutputter struct{}
 
 func NewStdOutputter() StdOutputter {
@@ -14,19 +22,13 @@ func NewStdOutputter() StdOutputter {
 }
 
 func (s StdOutputter) Output(incidents []pagerduty.Incident) {
+	fmt.Printf("%v", incidents)
 	for _, i := range incidents {
-		fn := getColourFunc(i)
-		fmt.Printf("%s\n", fn("[%d] %s, %s", i.IncidentNumber, i.Title, i.Status))
-		fmt.Printf("(%s)\n", i.HTMLURL)
+		fn := colours[i.Status]
+		fmt.Printf("%s %d: %s\n", fn("┃ %s", i.Status), i.IncidentNumber, i.Title)
+		if len(i.Acknowledgements) > 0 {
+			fmt.Printf("%s Acknowledged by %s, at %s", fn("┃"), i.Acknowledgements[0].By.Name, i.Acknowledgements[0].At)
+		}
+		fmt.Printf("%s %s\n\n", fn("┃"), color.BlueString(i.HTMLURL))
 	}
-}
-
-func getColourFunc(incident pagerduty.Incident) func(format string, a ...interface{}) string {
-	if incident.Status == "triggered" {
-		return color.New(color.FgRed).SprintfFunc()
-	}
-	if incident.Status == "acknowledged" {
-		return color.New(color.FgYellow).SprintfFunc()
-	}
-	return color.New(color.FgGreen).SprintfFunc()
 }
