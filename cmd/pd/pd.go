@@ -7,6 +7,7 @@ import (
 
 	"github.com/chriswalker/pd/pkg/output"
 	"github.com/chriswalker/pd/pkg/pagerduty"
+	"github.com/chriswalker/spinner"
 )
 
 var (
@@ -21,11 +22,18 @@ func main() {
 	}
 
 	pd := pagerduty.NewClient(*token)
+
+	spinner := spinner.NewSpinner()
+	spinner.Prefix = "Getting incidents "
+	spinner.Start()
+
 	incidents, err := pd.GetIncidents()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	spinner.Stop()
 
 	// Output
 	outputter := output.NewStdOutputter()

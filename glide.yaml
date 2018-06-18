@@ -3,3 +3,5 @@ import:
   - package: github.com/pkg/errors
   - package: github.com/fatih/color
     version: v1.7.0
+  - package: github.com/chriswalker/spinner
+    version: v1.0.0
