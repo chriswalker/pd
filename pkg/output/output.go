@@ -22,10 +22,10 @@ func NewStdOutputter() StdOutputter {
 }
 
 func (s StdOutputter) Output(incidents []pagerduty.Incident) {
-	fmt.Printf("%v", incidents)
 	for _, i := range incidents {
 		fn := colours[i.Status]
 		fmt.Printf("%s %d: %s\n", fn("┃ %s", i.Status), i.IncidentNumber, i.Title)
+		fmt.Printf("%s Time: %s\n", fn("┃"), i.CreatedAt)
 		if len(i.Acknowledgements) > 0 {
 			fmt.Printf("%s Acknowledged by %s, at %s", fn("┃"), i.Acknowledgements[0].By.Name, i.Acknowledgements[0].At)
 		}
