@@ -21,21 +21,24 @@ func main() {
 		os.Exit(1)
 	}
 
-	pd := pagerduty.NewClient(*token)
-
-	spinner := spinner.NewSpinner()
-	spinner.Prefix = "Getting incidents "
-	spinner.Start()
-
-	incidents, err := pd.GetIncidents()
+	incidents, err := getIncidents()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	spinner.Stop()
-
 	// Output
 	outputter := output.NewStdOutputter()
 	outputter.Output(incidents)
+}
+
+func getIncidents() ([]pagerduty.Incident, error) {
+	pd := pagerduty.NewClient(*token)
+
+	spinner := spinner.NewSpinner()
+	defer spinner.Stop()
+	spinner.Prefix = "Getting incidents "
+	spinner.Start()
+
+	return pd.GetIncidents()
 }
