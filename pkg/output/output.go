@@ -2,6 +2,7 @@ package output
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/chriswalker/pd/pkg/pagerduty"
 	"github.com/fatih/color"
@@ -22,6 +23,10 @@ func NewStdOutputter() StdOutputter {
 }
 
 func (s StdOutputter) Output(incidents []pagerduty.Incident) {
+	if len(incidents) == 0 {
+		fmt.Println("No overnight incidents to report")
+		os.Exit(0)
+	}
 	for _, i := range incidents {
 		fn := colours[i.Status]
 		fmt.Printf("%s %d: %s\n", fn("┃ %s", i.Status), i.IncidentNumber, i.Title)
