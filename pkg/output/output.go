@@ -16,17 +16,21 @@ var (
 	}
 )
 
+// StdOutputter represents outputtinf to stdout.
 type StdOutputter struct{}
 
+// NewStdOutputter returns an initialised StdOutputter.
 func NewStdOutputter() StdOutputter {
 	return StdOutputter{}
 }
 
+// Output prints the supplied slice of PagerDuty incidents to stdout.
 func (s StdOutputter) Output(incidents []pagerduty.Incident) {
 	if len(incidents) == 0 {
 		fmt.Println("No overnight incidents to report")
 		os.Exit(0)
 	}
+
 	for _, i := range incidents {
 		fn := colours[i.Status]
 		fmt.Printf("%s %d: %s\n", fn("┃ %s", i.Status), i.IncidentNumber, i.Title)

@@ -13,11 +13,14 @@ var (
 	pagerDutyURL = "https://api.pagerduty.com/incidents"
 )
 
+// Client represents a PagerDuty client, and contains the http.Client
+// used for interactions, and the user's PagerDuty token.
 type Client struct {
 	httpClient *http.Client
 	token      string
 }
 
+// NewClient returns an initialised PagerDuty client.
 func NewClient(token string) *Client {
 	return &Client{
 		token:      token,
@@ -25,6 +28,8 @@ func NewClient(token string) *Client {
 	}
 }
 
+// GetIncidents gets a list of incidents that happened between 1700 hrs the
+// previous day, and now.
 func (p *Client) GetIncidents() ([]Incident, error) {
 	req, err := http.NewRequest("GET", pagerDutyURL, nil)
 	if err != nil {
@@ -56,6 +61,8 @@ func (p *Client) GetIncidents() ([]Incident, error) {
 	return incidents.Incidents, nil
 }
 
+// getTimeYesterday calculates the time.Time representing 1700 hrs of the previous
+// day.
 func getTimeYesterday() time.Time {
 	t := time.Now()
 
